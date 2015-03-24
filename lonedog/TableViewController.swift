@@ -32,13 +32,13 @@ class TableViewController: UITableViewController {
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Potentially incomplete method implementation.
         // Return the number of sections.
-        return 1
+      return 1;
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete method implementation.
         // Return the number of rows in the section.
-        return 1
+        return people.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -59,17 +59,16 @@ class TableViewController: UITableViewController {
     }
     */
 
-    /*
     // Override to support editing the table view.
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             // Delete the row from the data source
+            people.removeAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }    
     }
-    */
 
     /*
     // Override to support rearranging the table view.
@@ -97,4 +96,30 @@ class TableViewController: UITableViewController {
       }
     }
 
+  @IBAction func add(sender: AnyObject) {
+    let alertController = UIAlertController(title: "Add new", message: nil, preferredStyle: .Alert);
+    
+    let addAction = UIAlertAction(title: "Add", style: .Default) { (_) in
+      let newPersonNameTextField = alertController.textFields![0] as UITextField
+      self.people.append(Person(name: newPersonNameTextField.text, debt: 0, debtStartDate: nil, debtEndDate: nil))
+      self.tableView.reloadData()
+    }
+    
+    addAction.enabled = false
+    
+    let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel) { (_) in }
+    alertController.addTextFieldWithConfigurationHandler { (textField) in
+      textField.placeholder = "Add"
+      
+      NSNotificationCenter.defaultCenter().addObserverForName(UITextFieldTextDidChangeNotification, object: textField, queue: NSOperationQueue.mainQueue()) { (notification) in
+        addAction.enabled = textField.text != ""
+      }
+    }
+  
+    alertController.addAction(cancelAction)
+    alertController.addAction(addAction)
+    
+    self.presentViewController(alertController, animated: true, completion: nil)
+    
+  }
 }
