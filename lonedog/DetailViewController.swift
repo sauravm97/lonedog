@@ -37,6 +37,8 @@ class DetailViewController: UIViewController {
         } else {
             person.debt = person.debt! + getAmountFromText(self.amountField.text)
         }
+        
+        self.amountField.text = nil
         self.view.endEditing(true)
         viewDidLoad()
     }

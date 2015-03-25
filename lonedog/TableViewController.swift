@@ -114,6 +114,8 @@ class TableViewController: UITableViewController {
         
         let addAction = UIAlertAction(title: "Add", style: .Default) { (_) in
             let newPersonNameTextField = alertController.textFields![0] as UITextField
+            //(alertController.textFields![0] as UITextField).autocapitalizationType = .Words      <-- Doesn't seem to work
+            //newPersonNameTextField.autocapitalizationType = .Words                               <-- Doesn't seem to work
             
             self.savePerson(newPersonNameTextField.text)
             
@@ -172,14 +174,16 @@ class TableViewController: UITableViewController {
         
         let person = people[indexPath.row]
         
-        managedContext.deleteObject(person)
+        people.removeAtIndex(indexPath.row)
         
-        loadData()
+        managedContext.deleteObject(person)
         
         var error : NSError?
         
         if !managedContext.save(&error) {
             println("Could not delete \(error), \(error?.userInfo)")
         }
+        
     }
+    
 }
