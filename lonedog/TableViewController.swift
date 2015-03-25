@@ -114,8 +114,6 @@ class TableViewController: UITableViewController {
         
         let addAction = UIAlertAction(title: "Add", style: .Default) { (_) in
             let newPersonNameTextField = alertController.textFields![0] as UITextField
-            //(alertController.textFields![0] as UITextField).autocapitalizationType = .Words      <-- Doesn't seem to work
-            //newPersonNameTextField.autocapitalizationType = .Words                               <-- Doesn't seem to work
             
             self.savePerson(newPersonNameTextField.text)
             
@@ -168,22 +166,42 @@ class TableViewController: UITableViewController {
         people.append(person)
     }
     
+    @IBAction func clickButton(sender: UIButton) {
+        updatePerson("Saurav", debt: 4.0)
+    }
+    
     func deletePerson(indexPath : NSIndexPath) {
         
         let (managedContext, entity) = coreDataSetUp()
         
         let person = people[indexPath.row]
         
-        people.removeAtIndex(indexPath.row)
-        
         managedContext.deleteObject(person)
+        people.removeAtIndex(indexPath.row)
         
         var error : NSError?
         
         if !managedContext.save(&error) {
             println("Could not delete \(error), \(error?.userInfo)")
         }
-        
     }
     
+    func retrievePerson(name: String) -> NSManagedObject? {
+        for person in people {
+            if (person.valueForKey("name") as String == name) {
+                return person
+            }
+        }
+        return nil
+    }
+    
+    func updatePerson(name: String, debt: Float) {
+        var person: NSManagedObject? = retrievePerson(name)
+        print(person)
+        if (person != nil) {
+            person!.setValue(debt, forKey: "debt")
+        }
+        print(person)
+        tableView.reloadData()
+    }
 }
